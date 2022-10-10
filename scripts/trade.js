@@ -2,13 +2,12 @@ const hre = require("hardhat");
 const fs = require("fs");
 require("dotenv").config();
 
-let config,arb,owner,inTrade,balances, routers;
+let config,arb,owner,inTrade,balances, routers, all;
 
 const network = hre.network.name;
 if (network === 'aurora') config = require('./../config/aurora.json');
 if (network === 'fantom') config = require('./../config/fantom.json');
 
-console.log(`Loaded ${config.routes.length} routes`);
 
 const main = async () => {
   await setup();
@@ -18,7 +17,7 @@ const main = async () => {
   //  await lookForDualTrade();
   //});
   const routes = searchAllRoutes();
-
+  console.log(`Loaded ${routes.length} routes`);
   for (let i = 0; i < routes.length; i++) {
     const r = routes[i];
     //console.log(r);
@@ -56,9 +55,11 @@ const searchForRoutes = () => {
 }
 
 const searchAllRoutes = () => {
+  all = new Map();
   list = [];
   for (let i = 0; i < config.routers.length; i++) {
     list.push(config.routers[i].address);
+    all.set(config.routers[i].address, config.routers[i].dex);
   }
   const routes = combs(list);
   const final_routes = []
@@ -73,10 +74,10 @@ const searchAllRoutes = () => {
 
     for (let b = 0; b < config.baseAssets.length; b++) {
       const asset = config.baseAssets[b].address;
-
+      all.set(asset, config.baseAssets[b].sym);
       for (let t = 0; t < config.tokens.length; t++) {
         const token = config.tokens[t].address;
-
+        all.set(token, config.tokens[t].sym);
         const targetRoute = {};
         targetRoute.router1 = route[0];
         targetRoute.router2 = route[1];
@@ -89,7 +90,7 @@ const searchAllRoutes = () => {
 
     }
   }
-  //console.log(allRoutes);
+  //console.log(all);
   return allRoutes;
 }
 
@@ -125,16 +126,17 @@ async function processRoute(targetRoute) {
     const divider = ethers.BigNumber.from(10000);
     const profitTarget = sizeMultiplied.div(divider);
     if (!config.routes.length > 0) {
-      fs.appendFile(`./data/${network}RouteLog.txt`, `["${targetRoute.router1}","${targetRoute.router2}","${targetRoute.token1}","${targetRoute.token2}"],` + "\n", function (err) { });
+      //fs.appendFile(`./data/${network}RouteLog.txt`, `["${targetRoute.router1}","${targetRoute.router2}","${targetRoute.token1}","${targetRoute.token2}"],` + "\n", function (err) { });
     }
     if (amtBack.gt(profitTarget)) {
-      console.log("Profit " + amtBack + " " + profitTarget + " " + targetRoute.token1 + " " + targetRoute.token2);
+      console.log(`Profit ${amtBack}  ${profitTarget} ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
       //await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
     } else {
       //await lookForDualTrade();
     }
   } catch (e) {
     //console.log(e);
+    //console.log("Error");
     //await lookForDualTrade();
   }
 }
@@ -169,7 +171,7 @@ const setup = async () => {
     //const interface = await ethers.getContractFactory('WETH9');
     //const assetToken = await interface.attach(asset.address);
     //const balance = await assetToken.balanceOf(config.arbContract);
-    const balance = ethers.BigNumber.from(1000);
+    const balance = ethers.BigNumber.from(10000);
     console.log(asset.sym, balance.toString());
     balances[asset.address] = { sym: asset.sym, balance, startBalance: balance };
   }

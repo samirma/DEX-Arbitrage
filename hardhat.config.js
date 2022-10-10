@@ -6,6 +6,11 @@ const ALCHEMY_API_KEY_URL = process.env.ALCHEMY_API_KEY_URL;
 const RINKEBY_PRIVATE_KEY = process.env.RINKEBY_PRIVATE_KEY;
 
 
+const DEFAULT_BLOCK_GAS_LIMIT = 6000000;
+const DEFAULT_GAS_MUL = 5;
+const DEFAULT_GAS_PRICE = 2000000000;
+
+
 module.exports = {
   networks: {
     aurora: {
@@ -15,9 +20,16 @@ module.exports = {
     fantom: {
       url: `https://rpc.ftm.tools/`,
       accounts: [process.env.privateKey],
+      gasPrice: 200000000000,
     },
   },
   solidity: {
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
     compilers: [
       { version: "0.8.7" },
       { version: "0.7.6" },
