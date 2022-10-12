@@ -3,9 +3,13 @@
   "minBasisPointsPerTrade": 20,
   "routers": [
     { "dex": "spiritswap", "address": "0x16327e3fbdaca3bcf7e38f5af2599d2ddc33ae52" },
+    { "dex": "sushi", "address": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506" },
     { "dex": "spookyswap", "address": "0xf491e7b69e4244ad4002bc14e878a34207e38c29" }
   ],
   "baseAssets": [
+    { "sym": "wftm","address": "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83" },
+    { "sym": "FTM","address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83" },
+    { "sym": "DAI", "address": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E" },
     { "sym": "USDC", "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75" }
   ],
   "tokens": [

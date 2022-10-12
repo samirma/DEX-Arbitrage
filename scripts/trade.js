@@ -107,8 +107,8 @@ const lookForDualTrade = async () => {
 async function processRoute(targetRoute) {
   try {
     let tradeSize = balances[targetRoute.token1].balance;
-    //const amtBack = await estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
-    const amtBack = await arb.estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+    const amtBack = await estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+    //const amtBack = await arb.estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
     //console.log(`amtBackLocal ${amtBackLocal}  amtBack  ${amtBack} `);
 
     const multiplier = ethers.BigNumber.from(config.minBasisPointsPerTrade + 10000);
@@ -169,7 +169,7 @@ const setup = async () => {
   for (let i = 0; i < config.baseAssets.length; i++) {
     const asset = config.baseAssets[i];
     const token = await ethers.getContractAt("IERC20", asset.address);
-    const balance = await  await token.balanceOf(DAI_WHALE); 
+    const balance = await token.balanceOf(DAI_WHALE); 
     console.log(asset.sym, balance.toString());
     balances[asset.address] = { sym: asset.sym, balance, startBalance: balance };
   }
