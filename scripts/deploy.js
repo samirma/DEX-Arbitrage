@@ -8,6 +8,9 @@ async function main() {
   const smartContract = await hre.ethers.getContractFactory(contractName);
   const contract = await smartContract.deploy();
   await contract.deployed();
+
+  const agetValueOfabc = await contract.test();
+  
   console.log(`${contractName} deployed to: ${contract.address}`); 
   console.log('Put the above contract address into the .env file under arbContract');
 }

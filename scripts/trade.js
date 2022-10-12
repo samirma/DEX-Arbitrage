@@ -2,28 +2,15 @@ const hre = require("hardhat");
 const fs = require("fs");
 require("dotenv").config();
 
+const { DAI, DAI_WHALE, POOL_ADDRESS_PROVIDER } = require("../config");
+
 let config,arb,owner,inTrade,balances, routers, all;
 
 const network = hre.network.name;
-if (network === 'aurora') config = require('./../config/aurora.json');
-if (network === 'fantom') config = require('./../config/fantom.json');
-
-
-const main = async () => {
-  await setup();
-  // Scale when using own node
-  //[0,0,0,0,0,0,0,0,0].forEach(async (v,i) => {
-  //  await new Promise(r => setTimeout(r, i*1000));
-  //  await lookForDualTrade();
-  //});
-  const routes = searchAllRoutes();
-  console.log(`Loaded ${routes.length} routes`);
-  for (let i = 0; i < routes.length; i++) {
-    const r = routes[i];
-    //console.log(r);
-    await processRoute(r);
-  }
-  //await lookForDualTrade();
+if (network === 'aurora') {
+  config = require('./../config/aurora.json');
+} else {
+  config = require('./../config/fantom.json');
 }
 
 const getAmountOutMin = async (router, _tokenIn, _tokenOut, _amount) => {
@@ -120,7 +107,10 @@ const lookForDualTrade = async () => {
 async function processRoute(targetRoute) {
   try {
     let tradeSize = balances[targetRoute.token1].balance;
-    const amtBack = await estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+    //const amtBack = await estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+    const amtBack = await arb.estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+    //console.log(`amtBackLocal ${amtBackLocal}  amtBack  ${amtBack} `);
+
     const multiplier = ethers.BigNumber.from(config.minBasisPointsPerTrade + 10000);
     const sizeMultiplied = tradeSize.mul(multiplier);
     const divider = ethers.BigNumber.from(10000);
@@ -161,17 +151,25 @@ const dualTrade = async (router1,router2,baseToken,token2,amount) => {
 }
 
 const setup = async () => {
-  [owner] = await ethers.getSigners();
-  console.log(`Owner: ${owner.address}`);
+
+  const flashLoanExample = await ethers.getContractFactory(
+    "Arb"
+  );
+
+  arb = await flashLoanExample.deploy();
+  await arb.deployed();
+ 
+  a = await arb.test();
+
+  console.log(a);
+
   //const IArb = await ethers.getContractFactory('Arb');
   //arb = await IArb.attach(config.arbContract);
   balances = {};
   for (let i = 0; i < config.baseAssets.length; i++) {
     const asset = config.baseAssets[i];
-    //const interface = await ethers.getContractFactory('WETH9');
-    //const assetToken = await interface.attach(asset.address);
-    //const balance = await assetToken.balanceOf(config.arbContract);
-    const balance = ethers.BigNumber.from(10000);
+    const token = await ethers.getContractAt("IERC20", asset.address);
+    const balance = await  await token.balanceOf(DAI_WHALE); 
     console.log(asset.sym, balance.toString());
     balances[asset.address] = { sym: asset.sym, balance, startBalance: balance };
   }
@@ -214,6 +212,25 @@ process.on('uncaughtException', function(err) {
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: '+p+' - reason: '+reason);
 });
+
+
+
+const main = async () => {
+  await setup();
+  // Scale when using own node
+  //[0,0,0,0,0,0,0,0,0].forEach(async (v,i) => {
+  //  await new Promise(r => setTimeout(r, i*1000));
+  //  await lookForDualTrade();
+  //});
+  const routes = searchAllRoutes();
+  console.log(`Loaded ${routes.length} routes`);
+  for (let i = 0; i < routes.length; i++) {
+    const r = routes[i];
+    //console.log(r);
+    await processRoute(r);
+  }
+  //await lookForDualTrade();
+}
 
 main()
   .then(() => process.exit(0))

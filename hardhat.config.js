@@ -13,15 +13,12 @@ const DEFAULT_GAS_PRICE = 2000000000;
 
 module.exports = {
   networks: {
-    aurora: {
-      url: `https://mainnet.aurora.dev`,
-      accounts: [process.env.privateKey],
-    },
-    fantom: {
-      url: `https://rpc.ftm.tools/`,
-      accounts: [process.env.privateKey],
-      gasPrice: 200000000000,
-    },
+    hardhat: {
+      chainId: 1337,
+      forking: {
+        url: "https://rpc.ftm.tools/"
+      }
+    }
   },
   solidity: {
     settings: {
@@ -32,6 +29,7 @@ module.exports = {
     },
     compilers: [
       { version: "0.8.7" },
+      { version: "0.8.10" },
       { version: "0.7.6" },
       { version: "0.6.6" }
     ]
