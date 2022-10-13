@@ -67,10 +67,6 @@ contract Arb is Ownable {
 		return balance;
 	}
 
-    function test() public pure returns(string memory) {
-        return  "Helloaaa";
-    }
-	
 	function recoverEth() external onlyOwner {
 		payable(msg.sender).transfer(address(this).balance);
 	}
