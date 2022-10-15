@@ -7,12 +7,12 @@
     { "dex": "spookyswap", "address": "0xf491e7b69e4244ad4002bc14e878a34207e38c29" }
   ],
   "baseAssets": [
-    { "sym": "FTM","address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83" },
+    { "sym": "WFTM","address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83" },
     { "sym": "DAI", "address": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E" },
     { "sym": "USDC", "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75" }
   ],
   "tokens": [
-    { "sym": "FTM","address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83" },
+    { "sym": "WFTM","address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83" },
     { "sym": "BEETS", "address": "0xF24Bcf4d1e507740041C9cFd2DddB29585aDCe1e" },
     { "sym": "COMB", "address": "0xaE45a827625116d6C0C40B5D7359EcF68F8e9AFD" },
     { "sym": "SPIRIT", "address": "0x5Cc61A78F164885776AA610fb0FE1257df78E59B" },

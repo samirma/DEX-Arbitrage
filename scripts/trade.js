@@ -48,27 +48,6 @@ const lookForDualTrade = async () => {
   await processRoute(targetRoute);
 }
 
-
-
-const dualTrade = async (router1,router2,baseToken,token2,amount) => {
-  if (inTrade === true) {
-    await lookForDualTrade();	
-    return false;
-  }
-  try {
-    inTrade = true;
-    console.log('> Making dualTrade...');
-    const tx = await arb.connect(owner).dualDexTrade(router1, router2, baseToken, token2, amount); //{ gasPrice: 1000000000003, gasLimit: 500000 }
-    await tx.wait();
-    inTrade = false;
-    await lookForDualTrade();
-  } catch (e) {
-    console.log(e);
-    inTrade = false;
-    await lookForDualTrade();
-  }
-}
-
 const setup = async () => {
 
   await lib.initBalances();
@@ -120,12 +99,13 @@ const main = async () => {
   //});
   const routes = lib.searchAllRoutes();
   console.log(`Loaded ${routes.length} routes`);
-  for (let i = 0; i < routes.length; i++) {
-    const r = routes[i];
-    //console.log(r);
-    await lib.processRoute(r);
+  while (true) {
+    for (let i = 0; i < routes.length; i++) {
+      const r = routes[i];
+      //console.log(r);
+      await lib.processRoute(r);
+    }
   }
-  logResults();
   //await lookForDualTrade();
 }
 

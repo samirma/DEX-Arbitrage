@@ -1,6 +1,9 @@
 const hre = require("hardhat");
 const fs = require("fs");
 require("dotenv").config();
+require("dotenv").config({ path: "../.env" });
+
+const wallet_address = process.env.address;
 
 let config,arb,owner,inTrade, all, balances, routers;
 
@@ -17,9 +20,15 @@ const initBalances = async () => {
   balances = {};
   for (let i = 0; i < config.baseAssets.length; i++) {
     const asset = config.baseAssets[i];
-    //const balance = await arb.getBalance(asset.address);
-    const balance = BigNumber(1000);
-    console.log(asset.sym, balance);
+    const balanceAssert = await arb.getBalance(asset.address);
+    var balance;
+    const max = 1151658833836250
+    if (balanceAssert > max) {
+      balance = ethers.BigNumber.from(max);
+    } else {
+      balance = balanceAssert;
+    }
+    console.log(asset.sym, balance, balanceAssert);
     balances[asset.address] = { sym: asset.sym, balance, startBalance: balance };
   }
 
@@ -31,6 +40,8 @@ const initBalances = async () => {
     routers[router.address] = UniRouterV2;
   }
   
+  owner = await getImpersonatedSigner(wallet_address);
+
 }
 
 async function getImpersonatedSigner(address) {
@@ -127,7 +138,7 @@ const searchAllRoutes = () => {
       }
       if (amtBack.gt(profitTarget)) {
         console.log(`Profit ${amtBack}  ${profitTarget} ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
-        //await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
+        await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
       } else {
         //await lookForDualTrade();
       }
@@ -136,6 +147,26 @@ const searchAllRoutes = () => {
       //console.log("Error");
       //await lookForDualTrade();
       //process.exit(1);
+    }
+  }
+
+
+  const dualTrade = async (router1,router2,baseToken,token2,amount) => {
+    if (inTrade === true) {
+      //await lookForDualTrade();	
+      return false;
+    }
+    try {
+      inTrade = true;
+      console.log('> Making dualTrade...');
+      const tx = await arb.connect(owner).dualDexTrade(router1, router2, baseToken, token2, amount); //{ gasPrice: 1000000000003, gasLimit: 500000 }
+      await tx.wait();
+      inTrade = false;
+      //await lookForDualTrade();
+    } catch (e) {
+      console.log(e);
+      inTrade = false;
+      //await lookForDualTrade();
     }
   }
 

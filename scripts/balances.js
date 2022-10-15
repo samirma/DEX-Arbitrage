@@ -41,7 +41,3 @@ main()
 		console.error(error);
 		process.exit(1);
 	});
-
-
-
-module.exports = { initBalances, balances, routers};
