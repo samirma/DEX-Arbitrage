@@ -2,13 +2,35 @@ const hre = require("hardhat");
 const fs = require("fs");
 require("dotenv").config();
 
-let config,arb,owner,inTrade,balances, routers, all;
+let config,arb,owner,inTrade, all, balances, routers;
 
 const network = hre.network.name;
 if (network === 'aurora') {
   config = require('./../config/aurora.json');
 } else {
   config = require('./../config/fantom.json');
+}
+
+const initBalances = async () => {
+  arb = await getArbContract();
+ 
+  balances = {};
+  for (let i = 0; i < config.baseAssets.length; i++) {
+    const asset = config.baseAssets[i];
+    //const balance = await arb.getBalance(asset.address);
+    const balance = BigNumber(1000);
+    console.log(asset.sym, balance);
+    balances[asset.address] = { sym: asset.sym, balance, startBalance: balance };
+  }
+
+  routers = []
+
+  for (let i = 0; i < config.routers.length; i++) {
+    const router = config.routers[i];
+    const UniRouterV2 = await hre.ethers.getContractAt("contracts/Arb.sol:IUniswapV2Router", router.address);
+    routers[router.address] = UniRouterV2;
+  }
+  
 }
 
 async function getImpersonatedSigner(address) {
@@ -23,8 +45,7 @@ function getToken (address) {
   return ethers.getContractAt("IERC20", address);
 }
 
-
-async function getArbContract  (router, _tokenIn, _tokenOut, _amount) {
+async function getArbContract () {
     const IArb = await ethers.getContractFactory('Arb');
     const a = await IArb.attach(config.arbContract);
     return a;
@@ -114,8 +135,9 @@ const searchAllRoutes = () => {
       //console.log(e);
       //console.log("Error");
       //await lookForDualTrade();
+      //process.exit(1);
     }
   }
 
 
-module.exports = { getImpersonatedSigner, estimateDualDexTrade, getToken, config, searchAllRoutes, processRoute, getArbContract};
+module.exports = { getImpersonatedSigner, estimateDualDexTrade, getToken, config, searchAllRoutes, processRoute, getArbContract, initBalances};

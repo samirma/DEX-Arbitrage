@@ -71,36 +71,7 @@ const dualTrade = async (router1,router2,baseToken,token2,amount) => {
 
 const setup = async () => {
 
-  signer = await getImpersonatedSigner(address);
-
-  const flashLoanExample = await ethers.getContractFactory(
-    "Arb"
-  );
-
-  arb = await flashLoanExample.deploy();
-  await arb.deployed();
- 
-  //const IArb = await ethers.getContractFactory('Arb');
-  //arb = await IArb.attach(config.arbContract);
-  balances = {};
-  for (let i = 0; i < config.baseAssets.length; i++) {
-    const asset = config.baseAssets[i];
-    const token = await lib.getToken(asset.address);
-    const balance = (await token.balanceOf(DAI_WHALE)).div(100); 
-    //const balance = ethers.BigNumber.from(10672751576);
-    console.log(asset.sym, balance.toString());
-    balances[asset.address] = { sym: asset.sym, balance, startBalance: balance };
-  }
-
-  await logResults();
-
-  routers = []
-
-  for (let i = 0; i < config.routers.length; i++) {
-    const router = config.routers[i];
-    const UniRouterV2 = await hre.ethers.getContractAt("contracts/Arb.sol:IUniswapV2Router", router.address);
-    routers[router.address] = UniRouterV2;
-  }
+  await lib.initBalances();
 
   setTimeout(() => {
     setInterval(() => {
@@ -112,11 +83,16 @@ const setup = async () => {
 
 const logResults = async () => {
   console.log(`############# LOGS #############`);
-    for (let i = 0; i < config.baseAssets.length; i++) {
+	arb = await lib.getArbContract();
+  for (let i = 0; i < config.baseAssets.length; i++) {
     const asset = config.baseAssets[i];
-    console.log(`#  ${asset.sym}`);
-    const assetToken = await interface.attach(asset.address);
+    const assetToken = await lib.getToken(asset.address);
     balances[asset.address].balance = await assetToken.balanceOf(config.arbContract);
+    const startBalance = balances[asset.address].startBalance;
+    if (startBalance.toString() == '0') {
+      continue;
+    }
+    console.log(`#  ${asset.sym}`);
     const diff = balances[asset.address].balance.sub(balances[asset.address].startBalance);
     const basisPoints = diff.mul(10000).div(balances[asset.address].startBalance);
     console.log(`#  ${asset.sym}: ${basisPoints.toString()}bps`);
@@ -142,12 +118,12 @@ const main = async () => {
   //  await new Promise(r => setTimeout(r, i*1000));
   //  await lookForDualTrade();
   //});
-  const routes = searchAllRoutes();
+  const routes = lib.searchAllRoutes();
   console.log(`Loaded ${routes.length} routes`);
   for (let i = 0; i < routes.length; i++) {
     const r = routes[i];
     //console.log(r);
-    await processRoute(r);
+    await lib.processRoute(r);
   }
   logResults();
   //await lookForDualTrade();

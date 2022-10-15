@@ -6,9 +6,9 @@ const lib = require("./trade_lib");
 require("dotenv").config({ path: "../.env" });
 const wallet_address = process.env.address;
 
-let config,arb,owner;
+let config,arb;
 
-config = lib.config
+config = lib.config;
 
 const main = async () => {
 	arb = await lib.getArbContract();
