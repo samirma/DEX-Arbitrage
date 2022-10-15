@@ -39,3 +39,11 @@ npx hardhat run --network aurora .\scripts\recover.js
 ```
 
 More info and solidity tutorials on my blog at https://jamesbachini.com
+
+
+Run node
+```shell
+npx hardhat node --fork https://rpc.ftm.tools/
+```
+
+

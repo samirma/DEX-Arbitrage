@@ -16,6 +16,9 @@ module.exports = {
     hardhat: {
       forking: {
         url: `https://rpc.ftm.tools/`,
+      },
+      accounts: {
+        count: 3,
       }
     },
     aurora: {
@@ -25,7 +28,6 @@ module.exports = {
     fantom: {
       url: `https://rpc.ftm.tools/`,
       accounts: [process.env.privateKey],
-      gasPrice: 200000000000,
     },
   },
   solidity: {

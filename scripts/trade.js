@@ -1,6 +1,11 @@
 const hre = require("hardhat");
 const fs = require("fs");
+const helpers = require("@nomicfoundation/hardhat-network-helpers");
+
 require("dotenv").config();
+require("dotenv").config({ path: "../.env" });
+
+const wallet_address = process.env.address;
 
 const { DAI, DAI_WHALE, POOL_ADDRESS_PROVIDER } = require("../config");
 
@@ -65,6 +70,8 @@ const dualTrade = async (router1,router2,baseToken,token2,amount) => {
 }
 
 const setup = async () => {
+
+  signer = await getImpersonatedSigner(address);
 
   const flashLoanExample = await ethers.getContractFactory(
     "Arb"

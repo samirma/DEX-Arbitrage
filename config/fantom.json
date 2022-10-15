@@ -1,5 +1,5 @@
 {
-  "arbContract": "0xchangethis",
+  "arbContract": "0x1d9bccc8e4012c14b22befc66382a1897c23511a",
   "minBasisPointsPerTrade": 20,
   "routers": [
     { "dex": "spiritswap", "address": "0x16327e3fbdaca3bcf7e38f5af2599d2ddc33ae52" },

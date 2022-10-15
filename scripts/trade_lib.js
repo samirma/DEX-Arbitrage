@@ -11,11 +11,24 @@ if (network === 'aurora') {
   config = require('./../config/fantom.json');
 }
 
-
-function getToken (address) {
-    return ethers.getContractAt("IERC20", address);
+async function getImpersonatedSigner(address) {
+  await hre.network.provider.request({
+    method: "hardhat_impersonateAccount",
+    params: [address]
+  });
+  return ethers.provider.getSigner(address);
 }
 
+function getToken (address) {
+  return ethers.getContractAt("IERC20", address);
+}
+
+
+async function getArbContract  (router, _tokenIn, _tokenOut, _amount) {
+    const IArb = await ethers.getContractFactory('Arb');
+    const a = await IArb.attach(config.arbContract);
+    return a;
+}
 
 const getAmountOutMin = async (router, _tokenIn, _tokenOut, _amount) => {
     const path = [_tokenIn, _tokenOut];
@@ -105,4 +118,4 @@ const searchAllRoutes = () => {
   }
 
 
-module.exports = { estimateDualDexTrade, getToken, config, searchAllRoutes, processRoute };
+module.exports = { getImpersonatedSigner, estimateDualDexTrade, getToken, config, searchAllRoutes, processRoute, getArbContract};
