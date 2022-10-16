@@ -5,7 +5,7 @@ require("dotenv").config({ path: "../.env" });
 
 const wallet_address = process.env.address;
 
-let config,arb,owner,inTrade, all, balances, routers;
+let config,arb,inTrade, all, balances, routers;
 
 const network = hre.network.name;
 if (network === 'aurora') {
@@ -24,6 +24,7 @@ const initBalances = async () => {
     var balance;
     const max = 10000000000999
     if (balanceAssert > max) {
+    //if (false) {
       balance = ethers.BigNumber.from(max);
     } else {
       balance = balanceAssert;
@@ -154,7 +155,8 @@ const searchAllRoutes = () => {
       }
       if (amtBack.gt(profitTarget)) {
         console.log(`Profit ${amtBack}  ${profitTarget} ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
-        await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
+        owner = await lib.getSignerOwner();
+        await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize, owner);
       } else {
         //await lookForDualTrade();
       }
@@ -167,7 +169,7 @@ const searchAllRoutes = () => {
   }
 
 
-  const dualTrade = async (router1,router2,baseToken,token2,amount) => {
+  const dualTrade = async (router1,router2,baseToken,token2,amount, owner) => {
     if (inTrade === true) {
       //await lookForDualTrade();	
       return false;
