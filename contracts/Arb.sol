@@ -73,7 +73,13 @@ contract Arb is Ownable {
 
 	function recoverTokens(address tokenAddress) external onlyOwner {
 		IERC20 token = IERC20(tokenAddress);
-		token.transfer(msg.sender, token.balanceOf(address(this)));
+		uint256 amount = token.balanceOf(address(this));
+		console.log(
+			"Transferring %s %s tokens",
+			msg.sender,
+			amount
+		);
+		token.transfer(msg.sender, amount);
 	}
 
 }

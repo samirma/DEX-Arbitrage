@@ -99,13 +99,13 @@ const main = async () => {
   //});
   const routes = lib.searchAllRoutes();
   console.log(`Loaded ${routes.length} routes`);
-  while (true) {
+  //while (true) {
     for (let i = 0; i < routes.length; i++) {
       const r = routes[i];
       //console.log(r);
       await lib.processRoute(r);
     }
-  }
+  //}
   //await lookForDualTrade();
 }
 

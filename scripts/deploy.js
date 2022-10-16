@@ -12,7 +12,6 @@ async function getImpersonatedSigner(address) {
 }
 
 async function main() {
-   [owner] = await ethers.getSigners();
    console.log(`Owner: ${wallet_address}`);
 
   signer = await getImpersonatedSigner(wallet_address);

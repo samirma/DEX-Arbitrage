@@ -1,5 +1,5 @@
 {
-  "arbContract": "0x1d9bccc8e4012c14b22befc66382a1897c23511a",
+  "arbContract": "0xA4d10b020e46cc46d2cA51E63924a0C1e0441150",
   "minBasisPointsPerTrade": 20,
   "routers": [
     { "dex": "spiritswap", "address": "0x16327e3fbdaca3bcf7e38f5af2599d2ddc33ae52" },
@@ -9,7 +9,11 @@
   "baseAssets": [
     { "sym": "WFTM","address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83" },
     { "sym": "DAI", "address": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E" },
-    { "sym": "USDC", "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75" }
+    { "sym": "USDC", "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75" },
+    { "sym": "BEETS", "address": "0xF24Bcf4d1e507740041C9cFd2DddB29585aDCe1e" },
+    { "sym": "COMB", "address": "0xaE45a827625116d6C0C40B5D7359EcF68F8e9AFD" },
+    { "sym": "SPIRIT", "address": "0x5Cc61A78F164885776AA610fb0FE1257df78E59B" },
+    { "sym": "SCREAM", "address": "0xe0654C8e6fd4D733349ac7E09f6f23DA256bF475" }
   ],
   "tokens": [
     { "sym": "WFTM","address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83" },

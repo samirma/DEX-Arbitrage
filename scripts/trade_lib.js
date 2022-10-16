@@ -22,13 +22,13 @@ const initBalances = async () => {
     const asset = config.baseAssets[i];
     const balanceAssert = await arb.getBalance(asset.address);
     var balance;
-    const max = 1151658833836250
+    const max = 10000000000999
     if (balanceAssert > max) {
       balance = ethers.BigNumber.from(max);
     } else {
       balance = balanceAssert;
     }
-    console.log(asset.sym, balance, balanceAssert);
+    //console.log(asset.sym, balance, balanceAssert);
     balances[asset.address] = { sym: asset.sym, balance, startBalance: balance };
   }
 
@@ -158,10 +158,13 @@ const searchAllRoutes = () => {
     }
     try {
       inTrade = true;
-      console.log('> Making dualTrade...');
+      const before = await arb.getBalance(baseToken);
+      console.log(`> Making dualTrade ${before} ${amount}...`);
       const tx = await arb.connect(owner).dualDexTrade(router1, router2, baseToken, token2, amount); //{ gasPrice: 1000000000003, gasLimit: 500000 }
       await tx.wait();
       inTrade = false;
+      const after = await arb.getBalance(baseToken);
+      console.log(`> Profit ${after.sub(before)}`);
       //await lookForDualTrade();
     } catch (e) {
       console.log(e);
@@ -171,4 +174,4 @@ const searchAllRoutes = () => {
   }
 
 
-module.exports = { getImpersonatedSigner, estimateDualDexTrade, getToken, config, searchAllRoutes, processRoute, getArbContract, initBalances};
+module.exports = { getImpersonatedSigner, estimateDualDexTrade, getToken, config, searchAllRoutes, processRoute, getArbContract, initBalances, getAmountOutMin};
