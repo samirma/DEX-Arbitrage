@@ -40,8 +40,6 @@ const initBalances = async () => {
     routers[router.address] = UniRouterV2;
   }
   
-  owner = await getImpersonatedSigner(wallet_address);
-
 }
 
 async function getImpersonatedSigner(address) {
@@ -50,6 +48,17 @@ async function getImpersonatedSigner(address) {
     params: [address]
   });
   return ethers.provider.getSigner(address);
+}
+
+async function getSignerOwner() {
+
+  [owner] = await ethers.getSigners();
+
+  if (network === 'fantom') {
+    return [owner] = await ethers.getSigners();
+  } else {
+    const owner = await getImpersonatedSigner(wallet_address);
+  }
 }
 
 function getToken (address) {
@@ -174,4 +183,4 @@ const searchAllRoutes = () => {
   }
 
 
-module.exports = { getImpersonatedSigner, estimateDualDexTrade, getToken, config, searchAllRoutes, processRoute, getArbContract, initBalances, getAmountOutMin};
+module.exports = { getSignerOwner, estimateDualDexTrade, getToken, config, searchAllRoutes, processRoute, getArbContract, initBalances, getAmountOutMin};

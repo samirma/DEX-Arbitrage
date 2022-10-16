@@ -4,6 +4,7 @@
   "routers": [
     { "dex": "spiritswap", "address": "0x16327e3fbdaca3bcf7e38f5af2599d2ddc33ae52" },
     { "dex": "sushi", "address": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506" },
+    { "dex": "protofi", "address": "0xF4C587a0972Ac2039BFF67Bc44574bB403eF5235" },
     { "dex": "spookyswap", "address": "0xf491e7b69e4244ad4002bc14e878a34207e38c29" }
   ],
   "baseAssets": [

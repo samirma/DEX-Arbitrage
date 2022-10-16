@@ -44,7 +44,7 @@ const main = async () => {
 
 	await lib.initBalances();
 
-	const owner = await lib.getImpersonatedSigner(wallet_address);
+	const owner = await lib.getSignerOwner();
 	console.log(`Owner: ${wallet_address}`);
 	arb = await lib.getArbContract();
 	for (let i = 0; i < config.baseAssets.length; i++) {
