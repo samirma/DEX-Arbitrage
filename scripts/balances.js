@@ -24,7 +24,8 @@ const estimateValueByRouter = async (token, amount, router) => {
 
 const estimateValue = async (token, amount) => {
 	const routers = ["0xf491e7b69e4244ad4002bc14e878a34207e38c29", "0x16327e3fbdaca3bcf7e38f5af2599d2ddc33ae52", "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506"]
-	let value
+	
+	let value = ethers.BigNumber.from(0);
 
 	for (let i = 0; i < routers.length; i++) {
 		try {
@@ -34,13 +35,13 @@ const estimateValue = async (token, amount) => {
 		  } catch (e) {
 		  }
 	}
-	console.log(value);
 	return value;
 }
 
 const main = async () => {
 
 	var arbValue = ethers.BigNumber.from(0);
+	var ownerValue = ethers.BigNumber.from(0);
 
 	await lib.initBalances();
 
@@ -55,9 +56,11 @@ const main = async () => {
 		const arbBalance = await arb.getBalance(asset.address);
 		console.log(`${asset.sym} Arb Balance: `,arbBalance.toString());
 		const usdValue = await estimateValue(asset.address, arbBalance);
+		const usdOwnerValue = await estimateValue(asset.address, ownerBalance);
 		arbValue = arbValue.add(usdValue)
+		ownerValue = ownerValue.add(usdOwnerValue)
 	}
-	console.log(`Arb Balance in USD: `,arbValue);
+	console.log(`Balance in USD: Arb:${arbValue} Owner:${ownerValue}`);
 }
 
 process.on('uncaughtException', function(err) {

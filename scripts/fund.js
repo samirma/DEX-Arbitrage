@@ -12,7 +12,7 @@ config = lib.config;
 
 const main = async () => {
 	arb = await lib.getArbContract();
-	const signer = await lib.getImpersonatedSigner(wallet_address);
+	const signer = await lib.getSignerOwner();
 	for (let i = 0; i < config.baseAssets.length; i++) {
 		const asset = config.baseAssets[i];
 		const tokenAsset = await lib.getToken(asset.address);
