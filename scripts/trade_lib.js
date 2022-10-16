@@ -55,9 +55,9 @@ async function getSignerOwner() {
   [owner] = await ethers.getSigners();
 
   if (network === 'fantom') {
-    return [owner] = await ethers.getSigners();
+    return (await ethers.getSigners())[0];
   } else {
-    const owner = await getImpersonatedSigner(wallet_address);
+    return await getImpersonatedSigner(wallet_address);
   }
 }
 
@@ -67,7 +67,14 @@ function getToken (address) {
 
 async function getArbContract () {
     const IArb = await ethers.getContractFactory('Arb');
-    const a = await IArb.attach(config.arbContract);
+    let contractAddress;
+    if (network === 'fantom') {
+      contractAddress = config.arbContractProd;
+    } else {
+      contractAddress = config.arbContract;
+    }
+    console.log(contractAddress)
+    const a = await IArb.attach(contractAddress);
     return a;
 }
 
