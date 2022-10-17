@@ -1,7 +1,7 @@
 {
   "arbContract": "0xA4d10b020e46cc46d2cA51E63924a0C1e0441150",
   "arbContractProd": "0xA4d10b020e46cc46d2cA51E63924a0C1e0441150",
-  "minBasisPointsPerTrade": 20,
+  "minBasisPointsPerTrade": 30,
   "routers": [
     { "dex": "spiritswap", "address": "0x16327e3fbdaca3bcf7e38f5af2599d2ddc33ae52" },
     { "dex": "sushi", "address": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506" },

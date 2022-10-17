@@ -61,6 +61,7 @@ const setup = async () => {
 }
 
 const logResults = async () => {
+  return
   console.log(`############# LOGS #############`);
 	arb = await lib.getArbContract();
   for (let i = 0; i < config.baseAssets.length; i++) {

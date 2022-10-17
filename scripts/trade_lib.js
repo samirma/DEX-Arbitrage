@@ -24,7 +24,7 @@ const initBalances = async () => {
     var balance;
     const max = 10000000000999
     if (balanceAssert > max) {
-    //if (false) {
+    //  if (false) {
       balance = ethers.BigNumber.from(max);
     } else {
       balance = balanceAssert;
@@ -86,9 +86,15 @@ const getAmountOutMin = async (router, _tokenIn, _tokenOut, _amount) => {
   }
   
   const estimateDualDexTrade = async (_router1, _router2, _token1, _token2, _amount) => {
-    const amtBack1 = await getAmountOutMin(_router1, _token1, _token2, _amount);
-    const amtBack2 = await getAmountOutMin(_router2, _token2, _token1, amtBack1);
-    //console.log(`_router1 ${_router1} _router2 ${_router2}`);
+    let amtBack2 = ethers.BigNumber.from(0);
+    try {
+      const amtBack1 = await getAmountOutMin(_router1, _token1, _token2, _amount);
+      amtBack2 = await getAmountOutMin(_router2, _token2, _token1, amtBack1);
+      //console.log(`_router1 ${_router1} _router2 ${_router2}`);
+    } catch (e) {
+      //console.log(e);
+      //await lookForDualTrade();
+    }
     return amtBack2;
   }
   
@@ -140,53 +146,39 @@ const searchAllRoutes = () => {
 
 
   async function processRoute(targetRoute) {
-    try {
-      let tradeSize = balances[targetRoute.token1].balance;
-      const amtBack = await estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
-      //const amtBack = await arb.estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
-      //console.log(`amtBackLocal ${amtBackLocal}  amtBack  ${amtBack} `);
-  
-      const multiplier = ethers.BigNumber.from(config.minBasisPointsPerTrade + 10000);
-      const sizeMultiplied = tradeSize.mul(multiplier);
-      const divider = ethers.BigNumber.from(10000);
-      const profitTarget = sizeMultiplied.div(divider);
-      if (!config.routes.length > 0) {
-        //fs.appendFile(`./data/${network}RouteLog.txt`, `["${targetRoute.router1}","${targetRoute.router2}","${targetRoute.token1}","${targetRoute.token2}"],` + "\n", function (err) { });
-      }
-      if (amtBack.gt(profitTarget)) {
-        console.log(`Profit ${amtBack}  ${profitTarget} ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
-        owner = await lib.getSignerOwner();
-        await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize, owner);
-      } else {
-        //await lookForDualTrade();
-      }
-    } catch (e) {
-      //console.log(e);
-      //console.log("Error");
+    let tradeSize = balances[targetRoute.token1].balance;
+    const amtBack = await estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+    //const amtBack = await arb.estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+    //console.log(`amtBackLocal ${amtBackLocal}  amtBack  ${amtBack} `);
+
+    const multiplier = ethers.BigNumber.from(config.minBasisPointsPerTrade + 10000);
+    const sizeMultiplied = tradeSize.mul(multiplier);
+    const divider = ethers.BigNumber.from(10000);
+    const profitTarget = sizeMultiplied.div(divider);
+    if (!config.routes.length > 0) {
+      //fs.appendFile(`./data/${network}RouteLog.txt`, `["${targetRoute.router1}","${targetRoute.router2}","${targetRoute.token1}","${targetRoute.token2}"],` + "\n", function (err) { });
+    }
+    if (amtBack.gt(profitTarget)) {
+      console.log(`Profit ${amtBack}  ${profitTarget} ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
+      owner = await getSignerOwner();
+      await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize, owner);
+    } else {
       //await lookForDualTrade();
-      //process.exit(1);
     }
   }
 
 
   const dualTrade = async (router1,router2,baseToken,token2,amount, owner) => {
-    if (inTrade === true) {
-      //await lookForDualTrade();	
-      return false;
-    }
     try {
-      inTrade = true;
       const before = await arb.getBalance(baseToken);
       console.log(`> Making dualTrade ${before} ${amount}...`);
       const tx = await arb.connect(owner).dualDexTrade(router1, router2, baseToken, token2, amount); //{ gasPrice: 1000000000003, gasLimit: 500000 }
       await tx.wait();
-      inTrade = false;
       const after = await arb.getBalance(baseToken);
       console.log(`> Profit ${after.sub(before)}`);
       //await lookForDualTrade();
     } catch (e) {
       console.log(e);
-      inTrade = false;
       //await lookForDualTrade();
     }
   }
