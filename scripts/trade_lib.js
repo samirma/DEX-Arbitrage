@@ -22,7 +22,7 @@ const initBalances = async () => {
     const asset = config.baseAssets[i];
     const balanceAssert = await arb.getBalance(asset.address);
     var balance;
-    const max = 10000000000999
+    const max = 990000000009999
     if (balanceAssert > max) {
     //  if (false) {
       balance = ethers.BigNumber.from(max);
