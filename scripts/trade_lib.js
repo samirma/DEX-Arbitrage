@@ -23,11 +23,11 @@ const initBalances = async () => {
     const balanceAssert = await arb.getBalance(asset.address);
     var balance;
     const max = 990000000009999
-    if (balanceAssert > max) {
-    //  if (false) {
+    //if (balanceAssert > max) {
+    if (false) {
       balance = ethers.BigNumber.from(max);
     } else {
-      balance = balanceAssert;
+      balance = balanceAssert.div(300);
     }
     //console.log(asset.sym, balance, balanceAssert);
     balances[asset.address] = { sym: asset.sym, balance, startBalance: balance };
@@ -93,7 +93,6 @@ const getAmountOutMin = async (router, _tokenIn, _tokenOut, _amount) => {
       //console.log(`_router1 ${_router1} _router2 ${_router2}`);
     } catch (e) {
       //console.log(e);
-      //await lookForDualTrade();
     }
     return amtBack2;
   }
