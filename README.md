@@ -46,4 +46,15 @@ Run node
 npx hardhat node --fork https://rpc.ftm.tools/
 ```
 
+Run trader.
 
+```shell
+npx hardhat run --network fantom ./scripts/trade.js
+```
+
+
+Run balancer check.
+
+```shell
+npx hardhat run --network fantom ./scripts/balances.js 
+```
