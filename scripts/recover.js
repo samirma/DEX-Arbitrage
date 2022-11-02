@@ -1,17 +1,17 @@
 const hre = require("hardhat");
 const fs = require("fs");
-require("dotenv").config();
+const lib = require("./trade_lib");
 
-let config,arb,owner;
-const network = hre.network.name;
-if (network === 'aurora') config = require('./../config/aurora.json');
-if (network === 'fantom') config = require('./../config/fantom.json');
+config = lib.config;
+
+require("dotenv").config({ path: "../.env" });
+const wallet_address = process.env.address;
 
 const main = async () => {
-  [owner] = await ethers.getSigners();
-  console.log(`Owner: ${owner.address}`);
-  const IArb = await ethers.getContractFactory('Arb');
-  arb = await IArb.attach(config.arbContract);
+  arb = await lib.getArbContract();
+  const test = await arb.owner();
+  const owner = await lib.getImpersonatedSigner(wallet_address);
+  console.log(`Owner: ${wallet_address} contract owner ${test}`);
   for (let i = 0; i < config.baseAssets.length; i++) {
     const asset = config.baseAssets[i];
     let balance = await arb.getBalance(asset.address);

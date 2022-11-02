@@ -1,23 +1,19 @@
 const hre = require("hardhat");
 const fs = require("fs");
+const helpers = require("@nomicfoundation/hardhat-network-helpers");
+
 require("dotenv").config();
+require("dotenv").config({ path: "../.env" });
 
-let config,arb,owner,inTrade,balances;
-const network = hre.network.name;
-if (network === 'aurora') config = require('./../config/aurora.json');
-if (network === 'fantom') config = require('./../config/fantom.json');
+const wallet_address = process.env.address;
 
-console.log(`Loaded ${config.routes.length} routes`);
+const { DAI, DAI_WHALE, POOL_ADDRESS_PROVIDER } = require("../config");
 
-const main = async () => {
-  await setup();
-  // Scale when using own node
-  //[0,0,0,0,0,0,0,0,0].forEach(async (v,i) => {
-  //  await new Promise(r => setTimeout(r, i*1000));
-  //  await lookForDualTrade();
-  //});
-  await lookForDualTrade();
-}
+const lib = require("./trade_lib");
+
+let config,arb,owner,inTrade,balances, routers, all;
+
+config = lib.config
 
 const searchForRoutes = () => {
   const targetRoute = {};
@@ -27,6 +23,7 @@ const searchForRoutes = () => {
   targetRoute.token2 = config.tokens[Math.floor(Math.random()*config.tokens.length)].address;
   return targetRoute;
 }
+
 
 let goodCount = 0;
 const useGoodRoutes = () => {
@@ -43,65 +40,18 @@ const useGoodRoutes = () => {
 
 const lookForDualTrade = async () => {
   let targetRoute;
-  if (config.routes.length > 0) {
+  if (false) {
     targetRoute = useGoodRoutes();
   } else {
     targetRoute = searchForRoutes();
   }
-  try {
-    let tradeSize = balances[targetRoute.token1].balance;
-    const amtBack = await arb.estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
-    const multiplier = ethers.BigNumber.from(config.minBasisPointsPerTrade+10000);
-    const sizeMultiplied = tradeSize.mul(multiplier);
-    const divider = ethers.BigNumber.from(10000);
-    const profitTarget = sizeMultiplied.div(divider);
-    if (!config.routes.length > 0) {
-      fs.appendFile(`./data/${network}RouteLog.txt`, `["${targetRoute.router1}","${targetRoute.router2}","${targetRoute.token1}","${targetRoute.token2}"],`+"\n", function (err) {});
-    }
-    if (amtBack.gt(profitTarget)) {
-      await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize);
-    } else {
-      await lookForDualTrade();
-    }
-  } catch (e) {
-    console.log(e);
-    await lookForDualTrade();	
-  }
-}
-
-const dualTrade = async (router1,router2,baseToken,token2,amount) => {
-  if (inTrade === true) {
-    await lookForDualTrade();	
-    return false;
-  }
-  try {
-    inTrade = true;
-    console.log('> Making dualTrade...');
-    const tx = await arb.connect(owner).dualDexTrade(router1, router2, baseToken, token2, amount); //{ gasPrice: 1000000000003, gasLimit: 500000 }
-    await tx.wait();
-    inTrade = false;
-    await lookForDualTrade();
-  } catch (e) {
-    console.log(e);
-    inTrade = false;
-    await lookForDualTrade();
-  }
+  await processRoute(targetRoute);
 }
 
 const setup = async () => {
-  [owner] = await ethers.getSigners();
-  console.log(`Owner: ${owner.address}`);
-  const IArb = await ethers.getContractFactory('Arb');
-  arb = await IArb.attach(config.arbContract);
-  balances = {};
-  for (let i = 0; i < config.baseAssets.length; i++) {
-    const asset = config.baseAssets[i];
-    const interface = await ethers.getContractFactory('WETH9');
-    const assetToken = await interface.attach(asset.address);
-    const balance = await assetToken.balanceOf(config.arbContract);
-    console.log(asset.sym, balance.toString());
-    balances[asset.address] = { sym: asset.sym, balance, startBalance: balance };
-  }
+
+  await lib.initBalances();
+
   setTimeout(() => {
     setInterval(() => {
       logResults();
@@ -111,12 +61,18 @@ const setup = async () => {
 }
 
 const logResults = async () => {
+  return
   console.log(`############# LOGS #############`);
-    for (let i = 0; i < config.baseAssets.length; i++) {
+	arb = await lib.getArbContract();
+  for (let i = 0; i < config.baseAssets.length; i++) {
     const asset = config.baseAssets[i];
-    const interface = await ethers.getContractFactory('WETH9');
-    const assetToken = await interface.attach(asset.address);
+    const assetToken = await lib.getToken(asset.address);
     balances[asset.address].balance = await assetToken.balanceOf(config.arbContract);
+    const startBalance = balances[asset.address].startBalance;
+    if (startBalance.toString() == '0') {
+      continue;
+    }
+    console.log(`#  ${asset.sym}`);
     const diff = balances[asset.address].balance.sub(balances[asset.address].startBalance);
     const basisPoints = diff.mul(10000).div(balances[asset.address].startBalance);
     console.log(`#  ${asset.sym}: ${basisPoints.toString()}bps`);
@@ -132,6 +88,27 @@ process.on('uncaughtException', function(err) {
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: '+p+' - reason: '+reason);
 });
+
+
+
+const main = async () => {
+  await setup();
+  // Scale when using own node
+  //[0,0,0,0,0,0,0,0,0].forEach(async (v,i) => {
+  //  await new Promise(r => setTimeout(r, i*1000));
+  //  await lookForDualTrade();
+  //});
+  const routes = lib.searchAllRoutes();
+  console.log(`Loaded ${routes.length} routes`);
+  //while (true) {
+    for (let i = 0; i < routes.length; i++) {
+      const r = routes[i];
+      //console.log(r);
+      await lib.processRoute(r);
+    }
+  //}
+  //await lookForDualTrade();
+}
 
 main()
   .then(() => process.exit(0))
