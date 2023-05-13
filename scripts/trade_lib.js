@@ -8,11 +8,11 @@ const wallet_address = process.env.address;
 let config,arb,inTrade, all, balances, routers;
 
 const network = hre.network.name;
-if (network === 'aurora') {
-  config = require('./../config/aurora.json');
-} else {
-  config = require('./../config/fantom.json');
-}
+
+if (network === 'aurora') config = require('./../config/aurora.json');
+if (network === 'fantom') config = require('./../config/fantom.json');
+if (network === 'bsc') config = require('./../config/bsc.json');
+
 
 const initBalances = async () => {
   arb = await getArbContract();

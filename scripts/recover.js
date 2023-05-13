@@ -9,13 +9,12 @@ const wallet_address = process.env.address;
 
 const main = async () => {
   arb = await lib.getArbContract();
-  const test = await arb.owner();
-  const owner = await lib.getImpersonatedSigner(wallet_address);
-  console.log(`Owner: ${wallet_address} contract owner ${test}`);
+	const owner = await lib.getSignerOwner();
+  console.log(`Owner: ${wallet_address} contract owner ${owner}`);
   for (let i = 0; i < config.baseAssets.length; i++) {
     const asset = config.baseAssets[i];
     let balance = await arb.getBalance(asset.address);
-    console.log(`${asset.sym} Start Balance: `,balance.toString());
+    console.log(`${asset.sym} ${asset.address}  Start Balance: `,balance.toString());
     await arb.connect(owner).recoverTokens(asset.address);
     balance = await arb.getBalance(asset.address);
     await new Promise(r => setTimeout(r, 2000));

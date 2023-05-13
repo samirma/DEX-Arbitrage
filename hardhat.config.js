@@ -27,8 +27,7 @@ module.exports = {
     },
     fantom: {
       url: `https://rpc.ftm.tools/`,
-      accounts: [process.env.privateKey],
-      gasPrice: 2118876494
+      accounts: [process.env.privateKey]
     },
   },
   solidity: {
