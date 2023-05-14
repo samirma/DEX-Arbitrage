@@ -22,6 +22,7 @@ module.exports = {
     },
     binance: {
       url: `https://bsc-dataseed.binance.org/`,
+      gas: "auto",
       accounts: [process.env.privateKey]
     }
   },

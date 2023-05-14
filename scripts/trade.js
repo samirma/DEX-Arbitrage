@@ -5,9 +5,6 @@ const helpers = require("@nomicfoundation/hardhat-network-helpers");
 require("dotenv").config();
 require("dotenv").config({ path: "../.env" });
 
-const wallet_address = process.env.address;
-
-const { DAI, DAI_WHALE, POOL_ADDRESS_PROVIDER } = require("../config");
 
 const lib = require("./trade_lib");
 
@@ -92,7 +89,9 @@ process.on('unhandledRejection', (reason, p) => {
 
 
 const main = async () => {
+  console.log(`Starting`);
   await setup();
+  console.log(`Setup done`);
   // Scale when using own node
   //[0,0,0,0,0,0,0,0,0].forEach(async (v,i) => {
   //  await new Promise(r => setTimeout(r, i*1000));

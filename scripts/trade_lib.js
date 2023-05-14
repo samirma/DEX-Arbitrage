@@ -104,6 +104,16 @@ const getAmountOutMin = async (router, _tokenIn, _tokenOut, _amount) => {
       //console.log(e);
     }
     return amtBack2;
+  }  
+
+  const estimateDualDexTradeContract = async (_router1, _router2, _token1, _token2, _amount) => {
+    let result = ethers.BigNumber.from(0);
+    try {
+      result = await arb.estimateDualDexTrade(_router1, _router2, _token1, _token2, _amount);
+    } catch (error) {
+      //console.log(e);
+    }
+    return result;
   }
   
   const combs = (array) => {
@@ -154,10 +164,16 @@ const searchAllRoutes = () => {
 
 
   async function processRoute(targetRoute) {
-    let tradeSize = balances[targetRoute.token1].balance;
-    const amtBack = await estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
-    //const amtBack = await arb.estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
-    //console.log(`amtBackLocal ${amtBackLocal}  amtBack  ${amtBack} `);
+    var tradeSize = balances[targetRoute.token1].balance;
+    if (tradeSize == 0) {
+      //return
+    }
+    tradeSize = ethers.BigNumber.from(1000)
+    console.log(`--- ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
+    //const amtBack = await estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+    const amtBack = await estimateDualDexTradeContract(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
+    
+    console.log(`${balances[targetRoute.token1].sym} result: ${amtBack} `);
 
     const multiplier = ethers.BigNumber.from(config.minBasisPointsPerTrade + 10000);
     const sizeMultiplied = tradeSize.mul(multiplier);
@@ -169,7 +185,7 @@ const searchAllRoutes = () => {
     if (amtBack.gt(profitTarget)) {
       console.log(`Profit ${amtBack}  ${profitTarget} ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
       owner = await getSignerOwner();
-      await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize, owner);
+      //await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize, owner);
     } else {
       //await lookForDualTrade();
     }
