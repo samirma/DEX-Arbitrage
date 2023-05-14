@@ -168,7 +168,7 @@ const searchAllRoutes = () => {
     if (tradeSize == 0) {
       //return
     }
-    tradeSize = ethers.BigNumber.from(1000)
+    tradeSize = ethers.BigNumber.from(100000)
     //console.log(`--- ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
     //const amtBack = await estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
     const amtBack = await estimateDualDexTradeContract(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
