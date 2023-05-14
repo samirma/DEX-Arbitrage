@@ -35,12 +35,18 @@ npx hardhat node --fork https://bsc-dataseed.binance.org/
 Run trader.
 
 ```shell
-npx hardhat run --network fantom ./scripts/trade.js
+npx hardhat run --network binance ./scripts/trade.js
 ```
 
+
+Run fund the contract.
+
+```shell
+npx hardhat run --network binance ./scripts/fund.js
+```
 
 Run balancer check.
 
 ```shell
-npx hardhat run --network fantom ./scripts/balances.js 
+npx hardhat run --network binance ./scripts/balances.js 
 ```

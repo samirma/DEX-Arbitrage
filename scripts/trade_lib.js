@@ -84,10 +84,8 @@ function getToken (address) {
 
 async function getArbContract () {
     const IArb = await ethers.getContractFactory('Arb');
-    let contractAddress;
-    contractAddress = config.arbContractProd;
-    const a = await IArb.attach(contractAddress);
-    return a;
+    let contractAddress = config.arbContract;
+    return await IArb.attach(contractAddress);
 }
 
 const getAmountOutMin = async (router, _tokenIn, _tokenOut, _amount) => {

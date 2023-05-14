@@ -13,16 +13,20 @@ config = lib.config;
 const main = async () => {
 	arb = await lib.getArbContract();
 	const signer = await lib.getSignerOwner();
+	//console.log(`Owner address: `, signer);
+	console.log(`Contract Balance: `, config.arbContract);
 	for (let i = 0; i < config.baseAssets.length; i++) {
 		const asset = config.baseAssets[i];
 		const tokenAsset = await lib.getToken(asset.address);
 		const ownerBalance = await tokenAsset.balanceOf(wallet_address);
 		console.log(`${asset.sym} Owner Balance: `,ownerBalance.toString());
-		const arbBalance = await arb.getBalance(asset.address);
-		console.log(`${asset.sym} Original Arb Balance: `,arbBalance.toString());
-		const tx = await tokenAsset.connect(signer).transfer(config.arbContract,ownerBalance);
-		await tx.wait();
-		await new Promise(r => setTimeout(r, 10000));
+		if (ownerBalance >0) {
+			const arbBalance = await arb.getBalance(asset.address);
+			console.log(`${asset.sym} Original Arb Balance: `,arbBalance.toString());
+			const tx = await tokenAsset.connect(signer).transfer(config.arbContract,ownerBalance);
+			await tx.wait();
+			await new Promise(r => setTimeout(r, 10000));
+		}
 	const postFundBalance = await arb.getBalance(asset.address);
 	console.log(`${asset.sym} New Arb Balance: `,postFundBalance.toString());
 	}

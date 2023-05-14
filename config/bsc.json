@@ -1,5 +1,5 @@
 {
-  "arbContractProd": "0xcC87Ae091A6bbdA57C2793Aa86c9E16dF363EAA8",
+  "arbContract": "0xcC87Ae091A6bbdA57C2793Aa86c9E16dF363EAA8",
   "minBasisPointsPerTrade": 50,
   "routers": [
     { "dex": "PancakeRouter", "address": "0x10ED43C718714eb63d5aA57B78B54704E256024E" },
