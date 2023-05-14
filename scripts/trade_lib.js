@@ -169,11 +169,11 @@ const searchAllRoutes = () => {
       //return
     }
     tradeSize = ethers.BigNumber.from(1000)
-    console.log(`--- ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
+    //console.log(`--- ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
     //const amtBack = await estimateDualDexTrade(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
     const amtBack = await estimateDualDexTradeContract(targetRoute.router1, targetRoute.router2, targetRoute.token1, targetRoute.token2, tradeSize);
     
-    console.log(`${balances[targetRoute.token1].sym} result: ${amtBack} `);
+    //console.log(`${balances[targetRoute.token1].sym} result: ${amtBack} `);
 
     const multiplier = ethers.BigNumber.from(config.minBasisPointsPerTrade + 10000);
     const sizeMultiplied = tradeSize.mul(multiplier);
