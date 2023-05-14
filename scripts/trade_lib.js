@@ -9,10 +9,26 @@ let config,arb,inTrade, all, balances, routers;
 
 const network = hre.network.name;
 
-if (network === 'aurora') config = require('./../config/aurora.json');
-if (network === 'fantom') config = require('./../config/fantom.json');
-if (network === 'bsc') config = require('./../config/bsc.json');
+function getConfig(network) {
+  let config;
+  switch (network) {
+    case 'aurora':
+      config = require('./../config/aurora.json');
+      break;
+    case 'fantom':
+      config = require('./../config/fantom.json');
+      break;
+    case 'binance':
+      config = require('./../config/bsc.json');
+      break;
+    case 'forking':
+      config = require('./../config/bsc.json');
+      break;
+  }
+  return config;
+}
 
+config = getConfig(network);
 
 const initBalances = async () => {
   arb = await getArbContract();
@@ -55,10 +71,10 @@ async function getSignerOwner() {
 
   [owner] = await ethers.getSigners();
 
-  if (network === 'fantom') {
-    return (await ethers.getSigners())[0];
-  } else {
+  if (network === 'forking') {
     return await getImpersonatedSigner(wallet_address);
+  } else {
+    return (await ethers.getSigners())[0];
   }
 }
 
@@ -69,12 +85,7 @@ function getToken (address) {
 async function getArbContract () {
     const IArb = await ethers.getContractFactory('Arb');
     let contractAddress;
-    if (network === 'fantom') {
-      contractAddress = config.arbContractProd;
-    } else {
-      contractAddress = config.arbContract;
-    }
-    console.log(contractAddress)
+    contractAddress = config.arbContractProd;
     const a = await IArb.attach(contractAddress);
     return a;
 }

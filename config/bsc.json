@@ -1,54 +1,21 @@
 {
-  "arbContract": "0xA4d10b020e46cc46d2cA51E63924a0C1e0441150",
-  "arbContractProd": "0xA4d10b020e46cc46d2cA51E63924a0C1e0441150",
+  "arbContractProd": "0xcC87Ae091A6bbdA57C2793Aa86c9E16dF363EAA8",
   "minBasisPointsPerTrade": 50,
   "routers": [
-    { "dex": "spiritswap", "address": "0x16327e3fbdaca3bcf7e38f5af2599d2ddc33ae52" },
-    { "dex": "sushi", "address": "0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506" },
-    { "dex": "protofi", "address": "0xF4C587a0972Ac2039BFF67Bc44574bB403eF5235" },
-    { "dex": "spookyswap", "address": "0xf491e7b69e4244ad4002bc14e878a34207e38c29" }
+    { "dex": "PancakeRouter", "address": "0x10ED43C718714eb63d5aA57B78B54704E256024E" },
+    { "dex": "jetswap", "address": "0xbe65b8f75b9f20f4c522e0067a3887fada714800" }
   ],
   "baseAssets": [
-    { "sym": "WFTM","address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83" },
-    { "sym": "DAI", "address": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E" },
-    { "sym": "USDC", "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75" },
-    { "sym": "BEETS", "address": "0xF24Bcf4d1e507740041C9cFd2DddB29585aDCe1e" },
-    { "sym": "COMB", "address": "0xaE45a827625116d6C0C40B5D7359EcF68F8e9AFD" },
-    { "sym": "SPIRIT", "address": "0x5Cc61A78F164885776AA610fb0FE1257df78E59B" },
-    { "sym": "SCREAM", "address": "0xe0654C8e6fd4D733349ac7E09f6f23DA256bF475" }
+    { "sym": "WBNB","address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c" },
+    { "sym": "CAKE","address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82" },
+    { "sym": "1INCH","address": "0x111111111117dc0aa78b770fa6a738034120c302" },
+    { "sym": "BUSD","address": "0xe9e7cea3dedca5984780bafc599bd69add087d56" }
   ],
   "tokens": [
-    { "sym": "WFTM","address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83" },
-    { "sym": "BEETS", "address": "0xF24Bcf4d1e507740041C9cFd2DddB29585aDCe1e" },
-    { "sym": "COMB", "address": "0xaE45a827625116d6C0C40B5D7359EcF68F8e9AFD" },
-    { "sym": "SPIRIT", "address": "0x5Cc61A78F164885776AA610fb0FE1257df78E59B" },
-    { "sym": "SCREAM", "address": "0xe0654C8e6fd4D733349ac7E09f6f23DA256bF475" },
-    { "sym": "HEC", "address": "0x5C4FDfc5233f935f20D2aDbA572F770c2E377Ab0" },
-    { "sym": "BOO", "address": "0x841FAD6EAe12c286d1Fd18d1d525DFfA75C7EFFE" },
-    { "sym": "xBOO", "address": "0xa48d959AE2E88f1dAA7D5F611E01908106dE7598" },
-    { "sym": "wETH", "address": "0x74b23882a30290451A17c44f4F05243b6b58C76d" },
-    { "sym": "wBTC", "address": "0x321162Cd933E2Be498Cd2267a90534A804051b11" },
-    { "sym": "BNB", "address": "0xD67de0e0a0Fd7b15dC8348Bb9BE742F3c5850454" },
-    { "sym": "USDC", "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75" },
-    { "sym": "CREAM", "address": "0x657A1861c15A3deD9AF0B6799a195a249ebdCbc6" },
-    { "sym": "COVER", "address": "0xB01E8419d842beebf1b70A7b5f7142abbaf7159D" },
-    { "sym": "BAND", "address": "0x46E7628E8b4350b2716ab470eE0bA1fa9e76c6C5" },
-    { "sym": "CRV", "address": "0x1E4F97b9f9F913c46F1632781732927B9019C68b" },
-    { "sym": "SNX", "address": "0x56ee926bD8c72B2d5fa1aF4d9E4Cbb515a1E3Adc" },
-    { "sym": "AAVE", "address": "0x6a07A792ab2965C72a5B8088d3a069A7aC3a993B" },
-    { "sym": "YFI", "address": "0x29b0Da86e484E1C0029B56e817912d778aC0EC69" },
-    { "sym": "LINK", "address": "0xb3654dc3D10Ea7645f8319668E8F54d2574FBdC8" },
-    { "sym": "SUSHI", "address": "0xae75A438b2E0cB8Bb01Ec1E1e376De11D44477CC" },
-    { "sym": "DAI", "address": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E" },
-    { "sym": "ICE", "address": "0xf16e81dce15B08F326220742020379B855B87DF9" },
-    { "sym": "BADGER", "address": "0x753fbc5800a8C8e3Fb6DC6415810d627A387Dfc9" },
-    { "sym": "DIGG", "address": "0x08f6fE8f4dC577CF81E40E03E561d29B8b33E19b" },
-    { "sym": "fUSDT", "address": "0x049d68029688eabf473097a2fc38ef61633a3c7a" },
-    { "sym": "WOOFY", "address": "0xD0660cD418a64a1d44E9214ad8e459324D8157f1" },
-    { "sym": "ANY", "address": "0xdDcb3fFD12750B45d32E084887fdf1aABAb34239" },
-    { "sym": "BIFI", "address": "0xd6070ae98b8069de6B494332d1A1a81B6179D960" },
-    { "sym": "MIM", "address": "0x82f0B8B456c1A451378467398982d4834b6829c1" },
-    { "sym": "KEK", "address": "0x627524d78B4fC840C887ffeC90563c7A42b671fD" }
+    { "sym": "WBNB","address": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c" },
+    { "sym": "CAKE","address": "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82" },
+    { "sym": "1INCH","address": "0x111111111117dc0aa78b770fa6a738034120c302" },
+    { "sym": "BUSD","address": "0xe9e7cea3dedca5984780bafc599bd69add087d56" }
   ],
   "routes": []
 }
