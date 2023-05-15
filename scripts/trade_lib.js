@@ -1,5 +1,6 @@
 const hre = require("hardhat");
 const fs = require("fs");
+const { exit } = require("process");
 require("dotenv").config();
 require("dotenv").config({ path: "../.env" });
 
@@ -166,7 +167,7 @@ const searchAllRoutes = () => {
   async function processRoute(targetRoute) {
     var tradeSize = balances[targetRoute.token1].balance;
     if (tradeSize == 0) {
-      //return
+      return
     }
     tradeSize = ethers.BigNumber.from(100000)
     //console.log(`--- ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
@@ -185,7 +186,7 @@ const searchAllRoutes = () => {
     if (amtBack.gt(profitTarget)) {
       console.log(`Profit ${amtBack}  ${profitTarget} ${all.get(targetRoute.token1)} ${all.get(targetRoute.token2)}  -  ${all.get(targetRoute.router1)}  ${all.get(targetRoute.router2)} `);
       owner = await getSignerOwner();
-      //await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize, owner);
+      await dualTrade(targetRoute.router1,targetRoute.router2,targetRoute.token1,targetRoute.token2,tradeSize, owner);
     } else {
       //await lookForDualTrade();
     }
@@ -199,7 +200,7 @@ const searchAllRoutes = () => {
       const tx = await arb.connect(owner).dualDexTrade(router1, router2, baseToken, token2, amount); //{ gasPrice: 1000000000003, gasLimit: 500000 }
       await tx.wait();
       const after = await arb.getBalance(baseToken);
-      console.log(`> Profit ${after.sub(before)}`);
+      console.log(`New balance: ${after} Profit ${after.sub(before)}`);
       //await lookForDualTrade();
     } catch (e) {
       console.log(e);
