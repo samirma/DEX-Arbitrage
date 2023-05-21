@@ -2,20 +2,11 @@ const hre = require("hardhat");
 require("dotenv").config({ path: "../.env" });
 const lib = require("./trade_lib");
 
-const wallet_address = process.env.address;
-
-async function getImpersonatedSigner(address) {
-  await hre.network.provider.request({
-    method: "hardhat_impersonateAccount",
-    params: [address]
-  });
-  return ethers.provider.getSigner(address);
-}
-
 async function main() {
-   console.log(`Owner: ${wallet_address}`);
 
-  const owner = await lib.getSignerOwner();
+	const owner = await lib.getSignerOwner();
+	const wallet_address = await owner.getAddress()
+	console.log(`Owner: ${wallet_address} `);
 
   const contractName = 'Arb';
   await hre.run("compile");
@@ -24,7 +15,7 @@ async function main() {
   await contract.deployed();
 
   console.log(`${contractName} deployed to: ${contract.address} `); 
-  console.log('Put the above contract address into the .env file under arbContract');
+  console.log('Put the above contract address into the bsc.json file under arbContract');
 }
 
 main()

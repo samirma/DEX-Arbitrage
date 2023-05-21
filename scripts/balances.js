@@ -4,7 +4,6 @@ require("dotenv").config();
 const lib = require("./trade_lib");
 
 require("dotenv").config({ path: "../.env" });
-const wallet_address = process.env.address;
 
 let config,arb,owner;
 
@@ -46,15 +45,20 @@ const main = async () => {
 	await lib.initBalances();
 
 	const owner = await lib.getSignerOwner();
-	console.log(`Owner: ${wallet_address}`);
+	const wallet_address = await owner.getAddress()
+	const ethBalance = await lib.getEthBalanceInUsd(wallet_address)
+	console.log(`Owner: ${wallet_address} USD ${ethBalance}`);
 	arb = await lib.getArbContract();
-	for (let i = 0; i < config.baseAssets.length; i++) {
+		for (let i = 0; i < config.baseAssets.length; i++) {
 		const asset = config.baseAssets[i];
+		console.log(`#### ${asset.sym}`);
 		const tokenAsset = await lib.getToken(asset.address);
 		const ownerBalance = await tokenAsset.balanceOf(wallet_address);
-		console.log(`${asset.sym} Owner Balance: `,ownerBalance.toString());
+		const ownerBalanceUsd = await lib.getTokenBalanceInUsd(asset.address, ownerBalance);
+		console.log(`Owner Balance: ${ownerBalance.toString()} USD ${ownerBalanceUsd}`);
 		const arbBalance = await arb.getBalance(asset.address);
-		console.log(`${asset.sym} Arb Balance: `,arbBalance.toString());
+		const arbBalanceUsd = await lib.getTokenBalanceInUsd(asset.address, arbBalance.toString());
+		console.log(`Arb Balance: ${arbBalance.toString()} USD ${arbBalanceUsd}}`);
 		const usdValue = await estimateValue(asset.address, arbBalance);
 		const usdOwnerValue = await estimateValue(asset.address, ownerBalance);
 		arbValue = arbValue.add(usdValue)

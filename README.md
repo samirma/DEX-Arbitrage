@@ -17,16 +17,8 @@ npx hardhat run --network binance scripts/deploy.js
 npx hardhat run --network forking scripts/deploy.js
 ```
 
-Finally to recover any funds use the script.
 
-```shell
-npx hardhat run --network aurora .\scripts\recover.js
-```
-
-More info and solidity tutorials on my blog at https://jamesbachini.com
-
-
-Run node
+Run local node for test
 ```shell
 npx hardhat node --fork https://rpc.ftm.tools/
 npx hardhat node --fork https://bsc-dataseed.binance.org/
@@ -39,10 +31,16 @@ npx hardhat run --network binance ./scripts/trade.js
 ```
 
 
-Run fund the contract.
+Run fund the contract, it can be done manually by sending funds to arbContract address
 
 ```shell
 npx hardhat run --network binance ./scripts/fund.js
+```
+
+Finally to recover any funds use the script.
+
+```shell
+npx hardhat run --network binance ./scripts/recover.js
 ```
 
 Run balancer check.
